@@ -2,8 +2,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
+
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "https://chatapp-3uny.onrender.com";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -15,9 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get('https://chatapp-3uny.onrender.com/api/auth/me', { 
-        withCredentials: true 
-      });
+      const res = await axios.get('/api/auth/me');
       setUser(res.data.user);
     } catch (error) {
       console.log('No auth token');
@@ -28,27 +29,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await axios.post('https://chatapp-3uny.onrender.com/api/auth/login', 
-      { email, password }, 
-      { withCredentials: true }
-    );
+    const res = await axios.post('/api/auth/login', { 
+      email, password 
+    });
     setUser(res.data.user);
     return res.data;
   };
 
   const signup = async (name, email, password) => {
-    const res = await axios.post('https://chatapp-3uny.onrender.com/api/auth/signup', 
-      { name, email, password }, 
-      { withCredentials: true }
-    );
+    const res = await axios.post('/api/auth/signup', { 
+      name, email, password 
+    });
     setUser(res.data.user);
     return res.data;
   };
 
   const logout = async () => {
-    await axios.post('https://chatapp-3uny.onrender.com/api/auth/logout', {}, 
-      { withCredentials: true }
-    );
+    await axios.post('/api/auth/logout');
     setUser(null);
   };
 
