@@ -5,8 +5,8 @@ import axios from 'axios';
 import { Users, MessageCircle, Plus, LogOut, Send, Edit3, Trash2, ThumbsUp, MessageCirclePlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_BASE = 'http://localhost:5000/api';
-const SOCKET_URL = 'http://localhost:5000';
+const API_BASE = 'https://chatapp-3uny.onrender.com/api';
+const SOCKET_URL = 'https://chatapp-3uny.onrender.com';
 
 export default function ChatApp() {
   const { user, logout } = useAuth();

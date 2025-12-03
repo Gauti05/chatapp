@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/me', { 
+      const res = await axios.get('https://chatapp-3uny.onrender.com/api/auth/me', { 
         withCredentials: true 
       });
       setUser(res.data.user);
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', 
+    const res = await axios.post('https://chatapp-3uny.onrender.com/api/auth/login', 
       { email, password }, 
       { withCredentials: true }
     );
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (name, email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/signup', 
+    const res = await axios.post('https://chatapp-3uny.onrender.com/api/auth/signup', 
       { name, email, password }, 
       { withCredentials: true }
     );
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await axios.post('http://localhost:5000/api/auth/logout', {}, 
+    await axios.post('https://chatapp-3uny.onrender.com/api/auth/logout', {}, 
       { withCredentials: true }
     );
     setUser(null);
