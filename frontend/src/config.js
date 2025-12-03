@@ -1,2 +1,2 @@
-export const API_BASE = 'http://localhost:5000/api';
-export const SOCKET_URL = 'http://localhost:5000';
+export const API_BASE = 'https://chatapp-3uny.onrender.com/api';
+export const SOCKET_URL = 'https://chatapp-3uny.onrender.com';
