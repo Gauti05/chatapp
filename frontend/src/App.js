@@ -1,13 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 import { Toaster } from 'react-hot-toast';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ChatApp from './pages/ChatApp';  
-
-
-
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -18,11 +15,9 @@ function AppContent() {
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Routes>
-         
-            <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-  <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />} />
-  <Route path="/" element={user ? <ChatApp /> : <Navigate to="/login" />} />
- 
+          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />} />
+          <Route path="/" element={user ? <ChatApp /> : <Navigate to="/login" />} />
         </Routes>
         <Toaster />
       </div>
