@@ -16,30 +16,30 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://chatapp-1-35m8.onrender.com"   
-];
+  "https://chatapp-1-35m8.onrender.com"  
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.log("❌ BLOCKED ORIGIN:", origin);
-      callback(new Error("Blocked by CORS"));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
 
-app.use(cors(corsOptions)); 
-app.use(cookieParser());
-app.use(express.json());
+app.use(express.json());          
+app.use(cookieParser());         
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("❌ BLOCKED ORIGIN:", origin);
+        callback(new Error("CORS Not Allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 
 app.use((req, res, next) => {
   console.log(
-    ` ${req.method} ${req.path} | token: ${req.cookies?.token ? "✅" : "❌"}`
+    `${req.method} ${req.path} | token: ${req.cookies?.token ? "✅" : "❌"}`
   );
   next();
 });
@@ -52,7 +52,7 @@ app.use("/api/messages", messageRoutes);
 app.get("/debug/auth", (req, res) => {
   res.json({
     cookies: req.cookies,
-    loggedIn: !!req.cookies?.token
+    loggedIn: !!req.cookies?.token,
   });
 });
 
@@ -94,7 +94,6 @@ io.on("connection", (socket) => {
   });
 });
 
-
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -106,4 +105,5 @@ mongoose
     });
   })
   .catch((err) => console.error("❌ MongoDB error:", err));
+
 
