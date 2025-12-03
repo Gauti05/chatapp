@@ -14,21 +14,33 @@ const app = express();
 const server = http.createServer(app);
 
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://chatapp-1-35m8.onrender.com"   
+];
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("❌ BLOCKED ORIGIN:", origin);
+      callback(new Error("Blocked by CORS"));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions)); 
-
-
 app.use(cookieParser());
 app.use(express.json());
 
 
 app.use((req, res, next) => {
-  console.log(` ${req.method} ${req.path} - cookies: ${!!req.cookies?.token ? '✅' : '❌'}`);
+  console.log(
+    ` ${req.method} ${req.path} | token: ${req.cookies?.token ? "✅" : "❌"}`
+  );
   next();
 });
 
@@ -37,21 +49,21 @@ app.use("/api/auth", authRoutes);
 app.use("/api/channels", channelRoutes);
 app.use("/api/messages", messageRoutes);
 
-
 app.get("/debug/auth", (req, res) => {
-  res.json({ 
+  res.json({
     cookies: req.cookies,
-    hasToken: !!req.cookies?.token 
+    loggedIn: !!req.cookies?.token
   });
 });
 
 app.get("/", (req, res) => {
-  res.json({ message: "API running " });
+  res.json({ message: "Backend API running..." });
 });
+
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -60,8 +72,8 @@ const io = new Server(server, {
 let onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
-  
+  console.log("🔌 Socket connected:", socket.id);
+
   socket.on("join", ({ userId, channelId }) => {
     socket.join(channelId);
     onlineUsers.set(userId, socket.id);
@@ -82,14 +94,16 @@ io.on("connection", (socket) => {
   });
 });
 
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB connected");
+    console.log("🍃 MongoDB connected");
+
     const PORT = process.env.PORT || 5000;
     server.listen(PORT, () => {
-      console.log(`Server: http://localhost:${PORT}`);
-    
+      console.log(`🚀 Server live on port ${PORT}`);
     });
   })
-  .catch((err) => console.error(" MongoDB error:", err));
+  .catch((err) => console.error("❌ MongoDB error:", err));
+
